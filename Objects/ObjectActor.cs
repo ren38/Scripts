@@ -342,26 +342,39 @@ public class ObjectActor : ObjectCombatable
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     #region Conditions
+
+    #region bleed
+    private List<effectObserver> bleedBeginObservers;
+    private List<effectObserver> bleedStackObservers;
+
     public void beginBleed(ObjectInteractable source)
     {
         //check if there is already a bleed effect active.
         //if not, start one. else stack one
-        BleedEffect preexisting = gameObject.GetComponent<BleedEffect>();
+        BleedEffect preexisting = getBleedEffect();
         if (preexisting == null)
         {
             BleedEffect bleeding = gameObject.AddComponent<BleedEffect>();
             bleeding.setup(this, source);
             applyNewEffect(bleeding);
+            foreach(effectObserver obs in bleedBeginObservers)
+            {
+                obs.trigger(bleeding);
+            }
         }
         else
         {
             preexisting.stack();
+            foreach (effectObserver obs in bleedStackObservers)
+            {
+                obs.trigger(preexisting);
+            }
         }
     }
     
     public int endBleed()
     {
-        BleedEffect preexisting = gameObject.GetComponent<BleedEffect>();
+        BleedEffect preexisting = getBleedEffect();
         if (preexisting == null)
         {
             int mult = preexisting.getMult();
@@ -371,26 +384,65 @@ public class ObjectActor : ObjectCombatable
         return 0;
     }
 
+    public BleedEffect getBleedEffect()
+    {
+        return gameObject.GetComponent<BleedEffect>();
+    }
+
+    public void bleedBeginSubscribe(effectObserver observer)
+    {
+        if (!bleedBeginObservers.Contains(observer))
+            bleedBeginObservers.Add(observer);
+        observer.connect(bleedBeginObservers);
+    }
+
+    public void bleedStackSubscribe(effectObserver observer)
+    {
+        if (!bleedStackObservers.Contains(observer))
+            bleedStackObservers.Add(observer);
+        observer.connect(bleedStackObservers);
+    }
+    #endregion //bleeding
+
+    #region burning
+    private List<effectObserver> burningBeginObservers;
+    private List<effectObserver> burningStackObservers;
+
     public void beginBurning(ObjectInteractable source)
     {
+        //burning negates chilled condition
+        ChilledEffect chilled = getChilledEffect();
+        if (chilled != null)
+        {
+            endChilled();
+            return;
+        }
         //check if there is already a bleed effect active.
         //if not, start one. else stack one
-        BurningEffect preexisting = gameObject.GetComponent<BurningEffect>();
+        BurningEffect preexisting = getBurningEffect();
         if (preexisting == null)
         {
             BurningEffect burning = gameObject.AddComponent<BurningEffect>();
             burning.setup(this, source);
             applyNewEffect(burning);
+            foreach (effectObserver obs in burningBeginObservers)
+            {
+                obs.trigger(burning);
+            }
         }
         else
         {
             preexisting.stack();
+            foreach (effectObserver obs in burningStackObservers)
+            {
+                obs.trigger(preexisting);
+            }
         }
     }
 
     public int endBurning()
     {
-        BurningEffect preexisting = gameObject.GetComponent<BurningEffect>();
+        BurningEffect preexisting = getBurningEffect();
         if (preexisting == null)
         {
             int mult = preexisting.getMult();
@@ -400,26 +452,68 @@ public class ObjectActor : ObjectCombatable
         return 0;
     }
 
+    public BurningEffect getBurningEffect()
+    {
+        return gameObject.GetComponent<BurningEffect>();
+    }
+
+    public void burningBeginSubscribe(effectObserver observer)
+    {
+        if (!burningBeginObservers.Contains(observer))
+            burningBeginObservers.Add(observer);
+        observer.connect(burningBeginObservers);
+    }
+
+    public void burningStackSubscribe(effectObserver observer)
+    {
+        if (!burningStackObservers.Contains(observer))
+            burningStackObservers.Add(observer);
+        observer.connect(burningStackObservers);
+    }
+
+    #endregion //burning
+
+    #region chilled
+    private List<effectObserver> chilledBeginObservers;
+    private List<effectObserver> chilledStackObservers;
+
     public void beginChilled(ObjectInteractable source)
     {
-        //check if there is already a bleed effect active.
-        //if not, start one. else stack one
-        ChilledEffect preexisting = gameObject.GetComponent<ChilledEffect>();
-        if (preexisting == null)
+        //chilled negates burning condition
+        BurningEffect burning = getBurningEffect();
+        if (burning == null)
         {
-            ChilledEffect chilled = gameObject.AddComponent<ChilledEffect>();
-            chilled.setup(this, source);
-            applyNewEffect(chilled);
+            //check if there is already a bleed effect active.
+            //if not, start one. else stack one
+            ChilledEffect preexisting = getChilledEffect();
+            if (preexisting == null)
+            {
+                ChilledEffect chilled = gameObject.AddComponent<ChilledEffect>();
+                chilled.setup(this, source);
+                applyNewEffect(chilled);
+                foreach (effectObserver obs in chilledBeginObservers)
+                {
+                    obs.trigger(chilled);
+                }
+            }
+            else
+            {
+                preexisting.stack();
+                foreach (effectObserver obs in chilledStackObservers)
+                {
+                    obs.trigger(preexisting);
+                }
+            }
         }
         else
         {
-            preexisting.stack();
+            endBurning();
         }
     }
 
     public float endChilled()
     {
-        ChilledEffect preexisting = gameObject.GetComponent<ChilledEffect>();
+        ChilledEffect preexisting = getChilledEffect();
         if (preexisting == null)
         {
             float mult = preexisting.getSpeedloss();
@@ -429,10 +523,151 @@ public class ObjectActor : ObjectCombatable
         return 0;
     }
 
-    #endregion
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    public ChilledEffect getChilledEffect()
+    {
+        return gameObject.GetComponent<ChilledEffect>();
+    }
+
+    public void chilledBeginSubscribe(effectObserver observer)
+    {
+        if (!chilledBeginObservers.Contains(observer))
+            chilledBeginObservers.Add(observer);
+        observer.connect(chilledBeginObservers);
+    }
+
+    public void chilledStackSubscribe(effectObserver observer)
+    {
+        if (!chilledStackObservers.Contains(observer))
+            chilledStackObservers.Add(observer);
+        observer.connect(chilledStackObservers);
+    }
+
+    #endregion //chilled
+
+    #region shattered
+    private List<effectObserver> shatteredBeginObservers;
+    private List<effectObserver> shatteredStackObservers;
+
+    public void beginShattered(ObjectInteractable source)
+    {
+        //check if there is already a bleed effect active.
+        //if not, start one. else stack one
+        ShatteredEffect preexisting = getShatteredEffect();
+        if (preexisting == null)
+        {
+            ShatteredEffect shattered = gameObject.AddComponent<ShatteredEffect>();
+            shattered.setup(this, source);
+            applyNewEffect(shattered);
+            foreach (effectObserver obs in shatteredBeginObservers)
+            {
+                obs.trigger(shattered);
+            }
+        }
+        else
+        {
+            preexisting.stack();
+            foreach (effectObserver obs in shatteredStackObservers)
+            {
+                obs.trigger(preexisting);
+            }
+        }
+    }
+
+    public int endShattered()
+    {
+        ShatteredEffect preexisting = getShatteredEffect();
+        if (preexisting == null)
+        {
+            int mult = preexisting.getMult();
+            preexisting.end(this);
+            return mult;
+        }
+        return 0;
+    }
+
+    public ShatteredEffect getShatteredEffect()
+    {
+        return gameObject.GetComponent<ShatteredEffect>();
+    }
+
+    public void shatteredBeginSubscribe(effectObserver observer)
+    {
+        if (!shatteredBeginObservers.Contains(observer))
+            shatteredBeginObservers.Add(observer);
+        observer.connect(shatteredBeginObservers);
+    }
+
+    public void shatteredStackSubscribe(effectObserver observer)
+    {
+        if (!shatteredStackObservers.Contains(observer))
+            shatteredStackObservers.Add(observer);
+        observer.connect(shatteredStackObservers);
+    }
+    #endregion //shattered
+
+    #region concussed
+    private List<effectObserver> concussedBeginObservers;
+    private List<effectObserver> concussedStackObservers;
+
+    public void beginConcussed(ObjectInteractable source)
+    {
+        ConcussedEffect preexisting = getConcussedEffect();
+        if (preexisting == null)
+        {
+            ConcussedEffect concussed = gameObject.AddComponent<ConcussedEffect>();
+            concussed.setup(this, source);
+            applyNewEffect(concussed);
+            foreach (effectObserver obs in concussedBeginObservers)
+            {
+                obs.trigger(concussed);
+            }
+        }
+        else
+        {
+            preexisting.stack();
+            foreach (effectObserver obs in concussedStackObservers)
+            {
+                obs.trigger(preexisting);
+            }
+        }
+    }
+
+    public int endConcussed()
+    {
+        ConcussedEffect preexisting = getConcussedEffect();
+        if (preexisting == null)
+        {
+            preexisting.end(this);
+            return 1;
+        }
+        return 0;
+    }
+
+    public ConcussedEffect getConcussedEffect()
+    {
+        return gameObject.GetComponent<ConcussedEffect>();
+    }
+
+    public void concussedBeginSubscribe(effectObserver observer)
+    {
+        if (!concussedBeginObservers.Contains(observer))
+            concussedBeginObservers.Add(observer);
+        observer.connect(concussedBeginObservers);
+    }
+
+    public void concussedStackSubscribe(effectObserver observer)
+    {
+        if (!concussedStackObservers.Contains(observer))
+            concussedStackObservers.Add(observer);
+        observer.connect(concussedStackObservers);
+    }
 
     #endregion
+
+    #endregion //ending conditions
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    #endregion //ending effects
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -577,23 +812,18 @@ public class ObjectActor : ObjectCombatable
 
     private void addTargets(ObjectCombatable newTarget)
     {
-        Debug.Log("adding target");
         if (myTeam != null)
         {
-            Debug.Log(gameObject.name + " myTeam != null");
             ObjectActor actorTarget = (ObjectActor)newTarget;
             if (actorTarget != null)
             {
-                Debug.Log("actor target found");
                 team newEnemyTeam = actorTarget.getTeam();
                 if(newEnemyTeam != null)
                 {
-                    Debug.Log("adding team");
                     myTeam.addEnemyTeam(newEnemyTeam);
                 }
                 else
                 {
-                    Debug.Log("adding individual");
                     myTeam.addEnemyIndividual(newTarget);
                 }
             }

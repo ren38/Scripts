@@ -25,10 +25,8 @@ public class MixTeam : AITeam
 
     private void givePositions()
     {
-        Debug.Log("givePositions called");
         if(enemyIndividuals == null || enemyIndividuals.Count == 0)
         {
-            Debug.Log("enemyIndividuals gate");
             int i = 0;
             foreach (BasicMotivator member in motivatorUnits)
             {

@@ -362,6 +362,9 @@ public class ObjectCombatable : ObjectInteractable
         else { return 0; }
     }
 
+    public void physicalArmorValueChange(int delta) { physicalArmor += delta; }
+    public int getPhysicalArmorValue() { return physicalArmor; }
+
     /*
      * hit subscription. Returns game object of the source.
      */
@@ -412,8 +415,11 @@ public class ObjectCombatable : ObjectInteractable
             return takePhysicalDamage(delta, source);
         }
         else{ return 0; }
-        
+
     }
+
+    public void piercingArmorValueChange(int delta) { piercingArmor += delta; }
+    public int getPiercingArmorValue() { return piercingArmor; }
 
     /*
      * hit subscription. Returns game object of the source.
@@ -461,11 +467,13 @@ public class ObjectCombatable : ObjectInteractable
                     delta = observer.trigger(delta);
                 }
             }
-            return takePhysicalDamage(delta, source);
+            return takePhysicalDamage(applyArmor(bludgeoningArmor, delta), source);
         }
         else { return 0; }
-
     }
+
+    public void bludgeoningArmorValueChange(int delta) { bludgeoningArmor += delta; }
+    public int getBludgeoningArmorValue() { return bludgeoningArmor; }
 
     /*
      * hit subscription. Returns game object of the source.
@@ -513,11 +521,13 @@ public class ObjectCombatable : ObjectInteractable
                     delta = observer.trigger(delta);
                 }
             }
-            return takePhysicalDamage(delta, source);
+            return takePhysicalDamage(applyArmor(slashingArmor, delta), source);
         }
         else { return 0; }
-
     }
+
+    public void slashingArmorValueChange(int delta) { slashingArmor += delta; }
+    public int getSlashingArmorValue() { return slashingArmor; }
 
     /*
      * hit subscription. Returns game object of the source.
@@ -571,11 +581,13 @@ public class ObjectCombatable : ObjectInteractable
             {
                 burning.addDuration(delta / 100);
             }
-            return takeRawDamage(delta, source);
+            return takeRawDamage(applyArmor(fireArmor, delta), source);
         }
         else { return 0; }
-
     }
+
+    public void fireArmorValueChange(int delta) { fireArmor += delta; }
+    public int getFireArmorValue() { return fireArmor; }
 
     /*
      * hit subscription. Returns game object of the source.
@@ -628,11 +640,14 @@ public class ObjectCombatable : ObjectInteractable
             {
                 chilled.addLoss(delta / 100);
             }
-            return takeRawDamage(delta, source);
+            return takeRawDamage(applyArmor(coldArmor, delta), source);
         }
         else { return 0; }
 
     }
+
+    public void coldArmorValueChange(int delta) { coldArmor += delta; }
+    public int getColdArmorValue() { return coldArmor; }
 
     /*
      * hit subscription. Returns game object of the source.
@@ -680,11 +695,14 @@ public class ObjectCombatable : ObjectInteractable
                     delta = observer.trigger(delta);
                 }
             }
-            return takeRawDamage(delta, source);
+            return takeRawDamage(applyArmor(electricArmor, delta), source);
         }
         else { return 0; }
 
     }
+
+    public void electricArmorValueChange(int delta) { electricArmor += delta; }
+    public int getElectricArmorValue() { return electricArmor; }
 
     /*
      * hit subscription. Returns game object of the source.
@@ -732,11 +750,13 @@ public class ObjectCombatable : ObjectInteractable
                     delta = observer.trigger(delta);
                 }
             }
-            return takeRawDamage(delta, source);
+            return takeRawDamage(applyArmor(acidArmor, delta), source);
         }
         else { return 0; }
-
     }
+
+    public void acidArmorValueChange(int delta) { acidArmor += delta; }
+    public int getAcidArmorValue() { return acidArmor; }
 
     /*
      * hit subscription. Returns game object of the source.
@@ -785,11 +805,13 @@ public class ObjectCombatable : ObjectInteractable
                     delta = observer.trigger(delta);
                 }
             }
-            return takeRawDamage(delta, source);
+            return takeRawDamage(applyArmor(poisonArmor, delta), source);
         }
         else { return 0; }
-
     }
+
+    public void poisonArmorValueChange(int delta) { poisonArmor += delta; }
+    public int getPoisonArmorValue() { return physicalArmor; }
 
     /*
      * hit subscription. Returns game object of the source.
@@ -838,11 +860,13 @@ public class ObjectCombatable : ObjectInteractable
                     delta = observer.trigger(delta);
                 }
             }
-            return takeRawDamage(delta, source);
+            return takeRawDamage(applyArmor(magicArmor, delta), source);
         }
         else { return 0; }
-
     }
+
+    public void magicArmorValueChange(int delta) { magicArmor += delta; }
+    public int getMagicArmorValue() { return magicArmor; }
 
     /*
      * hit subscription. Returns game object of the source.
@@ -890,11 +914,13 @@ public class ObjectCombatable : ObjectInteractable
                     delta = observer.trigger(delta);
                 }
             }
-            return takeMagicDamage(delta, source);
+            return takeMagicDamage(applyArmor(occultArmor, delta), source);
         }
         else { return 0; }
-
     }
+
+    public void occultArmorValueChange(int delta) { occultArmor += delta; }
+    public int getOccultArmorValue() { return occultArmor; }
 
     /*
      * hit subscription. Returns game object of the source.
@@ -942,11 +968,13 @@ public class ObjectCombatable : ObjectInteractable
                     delta = observer.trigger(delta);
                 }
             }
-            return takeMagicDamage(delta, source);
+            return takeMagicDamage(applyArmor(arcaneArmor, delta), source);
         }
         else { return 0; }
-
     }
+
+    public void arcaneArmorValueChange(int delta) { arcaneArmor += delta; }
+    public int getArcaneArmorValue() { return arcaneArmor; }
 
     /*
      * hit subscription. Returns game object of the source.
@@ -994,11 +1022,13 @@ public class ObjectCombatable : ObjectInteractable
                     delta = observer.trigger(delta);
                 }
             }
-            return takeMagicDamage(delta, source);
+            return takeMagicDamage(applyArmor(divineArmor, delta), source);
         }
         else { return 0; }
-
     }
+
+    public void divineArmorValueChange(int delta) { divineArmor += delta; }
+    public int getDivineArmorValue() { return divineArmor; }
 
     /*
      * hit subscription. Returns game object of the source.
@@ -1031,7 +1061,7 @@ public class ObjectCombatable : ObjectInteractable
     [SerializeField]
     private bool takesRadiantDamage = true;
     [SerializeField]
-    private int RadiantArmor = 0;
+    private int radiantArmor = 0;
     public float takeRadiantDamage(float delta, ObjectInteractable source)//Damage subtracts. deltas should be positive.
     {
         if (!dead && takesRadiantDamage)
@@ -1047,11 +1077,13 @@ public class ObjectCombatable : ObjectInteractable
                     delta = observer.trigger(delta);
                 }
             }
-            return takeRawDamage(delta, source);
+            return takeRawDamage(applyArmor(radiantArmor, delta), source);
         }
         else { return 0; }
-
     }
+
+    public void radiantArmorValueChange(int delta) { radiantArmor += delta; }
+    public int getRadiantArmorValue() { return radiantArmor; }
 
     /*
      * hit subscription. Returns game object of the source.
@@ -1099,10 +1131,13 @@ public class ObjectCombatable : ObjectInteractable
                     delta = observer.trigger(delta);
                 }
             }
-            return takeRawDamage(delta, source);
+            return takeRawDamage(applyArmor(drainingArmor, delta), source);
         }
         else { return 0; }
     }
+
+    public void drainingArmorValueChange(int delta) { drainingArmor += delta; }
+    public int getDrainingArmorValue() { return drainingArmor; }
 
     /*
      * hit subscription. Returns game object of the source.

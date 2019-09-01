@@ -127,6 +127,32 @@ public class comboObserver : Observer<(ObjectInteractable, BaseSkill)>
     }
 }
 
+public class effectObserver : Observer<IEffect>
+{
+    private List<effectObserver> observerList;
+
+    public override void setupObserver(Func<IEffect> activate)
+    {
+        this.activate = activate;
+    }
+
+    public override void trigger(IEffect datum)
+    {
+        activate(datum);
+    }
+
+    public void connect(List<effectObserver> observers)
+    {
+        this.observerList = observers;
+    }
+
+    public void complete()
+    {
+        if (observerList.Contains(this))
+            observerList.Remove(this);
+        Destroy(this);
+    }
+}
 /*
  * unsure if I want to implement this.
 public class ActorObserver : Observer<ObjectActor>
