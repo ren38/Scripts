@@ -115,6 +115,14 @@ public class ObjectActor : ObjectCombatable
     #region General Functions
     public team getTeam(){ return myTeam; }
     public void setTeam(team newTeam) { myTeam = newTeam; }
+
+    public void setDestinationLocation(Vector3 position)
+    {
+        if(navAgent != null)
+        {
+            navAgent.SetDestination(position);
+        }
+    }
     #endregion
 
     private void Update()

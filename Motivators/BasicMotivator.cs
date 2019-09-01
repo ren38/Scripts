@@ -18,6 +18,11 @@ public abstract class BasicMotivator : MonoBehaviour
         }
     }
 
+    public void setNewDestination(Vector3 newDestination)
+    {
+        actorSelf.setDestinationLocation(newDestination);
+    }
+
     public virtual void newTargetIndividual(ObjectActor newTarget)
     {
         checkTargetList();

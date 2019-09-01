@@ -8,12 +8,33 @@ public class MixTeam : AITeam
     private PlayerMotivator player;
     [SerializeField]
     private ObjectActor Leader;
+    [SerializeField]
+    private Transform[] positionsAroundLeader;
 
     // Start is called before the first frame update
     void Start()
     {
         teamSetup();
         player.setTeam(this);
+    }
+
+    private void Update()
+    {
+        givePositions();
+    }
+
+    private void givePositions()
+    {
+        Debug.Log("givePositions called");
+        if(enemyIndividuals == null || enemyIndividuals.Count == 0)
+        {
+            Debug.Log("enemyIndividuals gate");
+            int i = 0;
+            foreach (BasicMotivator member in motivatorUnits)
+            {
+                member.setNewDestination(positionsAroundLeader[i].position);
+            }
+        }
     }
 
     public override void addEnemyTeam(team newTeam)
