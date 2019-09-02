@@ -33,7 +33,6 @@ public class TeamMemberMotivator : BasicMotivator
 
     private void changeTarget()
     {
-        Debug.Log(gameObject + " change target called");
         targetActor = targets[rand.Next(targets.Count - 1)];
     }
 

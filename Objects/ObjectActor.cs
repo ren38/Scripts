@@ -51,6 +51,16 @@ public class ObjectActor : ObjectCombatable
         effectAdditionObservers = new List<GameObjectObserver>();
         effectListChangeObservers = new List<GameObjectObserver>();
         castingSpeedAdjusters = new List<FloatAdjuster>();
+        bleedBeginObservers = new List<effectObserver>();
+        bleedStackObservers = new List<effectObserver>();
+        burningBeginObservers = new List<effectObserver>();
+        burningStackObservers = new List<effectObserver>();
+        chilledBeginObservers = new List<effectObserver>();
+        chilledStackObservers = new List<effectObserver>();
+        shatteredBeginObservers = new List<effectObserver>();
+        shatteredStackObservers = new List<effectObserver>();
+        concussedBeginObservers = new List<effectObserver>();
+        concussedStackObservers = new List<effectObserver>();
         cooldown = new float[8];
         base.setupCombatable();
         initializeOrders();
@@ -375,7 +385,7 @@ public class ObjectActor : ObjectCombatable
     public int endBleed()
     {
         BleedEffect preexisting = getBleedEffect();
-        if (preexisting == null)
+        if (preexisting != null)
         {
             int mult = preexisting.getMult();
             preexisting.end(this);
@@ -414,6 +424,7 @@ public class ObjectActor : ObjectCombatable
         ChilledEffect chilled = getChilledEffect();
         if (chilled != null)
         {
+            Debug.Log("Chilled found!");
             endChilled();
             return;
         }
@@ -443,7 +454,7 @@ public class ObjectActor : ObjectCombatable
     public int endBurning()
     {
         BurningEffect preexisting = getBurningEffect();
-        if (preexisting == null)
+        if (preexisting != null)
         {
             int mult = preexisting.getMult();
             preexisting.end(this);
@@ -514,7 +525,7 @@ public class ObjectActor : ObjectCombatable
     public float endChilled()
     {
         ChilledEffect preexisting = getChilledEffect();
-        if (preexisting == null)
+        if (preexisting != null)
         {
             float mult = preexisting.getSpeedloss();
             preexisting.end(this);
@@ -576,7 +587,7 @@ public class ObjectActor : ObjectCombatable
     public int endShattered()
     {
         ShatteredEffect preexisting = getShatteredEffect();
-        if (preexisting == null)
+        if (preexisting != null)
         {
             int mult = preexisting.getMult();
             preexisting.end(this);
@@ -635,7 +646,7 @@ public class ObjectActor : ObjectCombatable
     public int endConcussed()
     {
         ConcussedEffect preexisting = getConcussedEffect();
-        if (preexisting == null)
+        if (preexisting != null)
         {
             preexisting.end(this);
             return 1;
@@ -818,7 +829,7 @@ public class ObjectActor : ObjectCombatable
             if (actorTarget != null)
             {
                 team newEnemyTeam = actorTarget.getTeam();
-                if(newEnemyTeam != null)
+                if(newEnemyTeam != null && actorTarget.getTeam() != getTeam())
                 {
                     myTeam.addEnemyTeam(newEnemyTeam);
                 }

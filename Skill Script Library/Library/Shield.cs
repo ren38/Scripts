@@ -81,10 +81,19 @@ public class Shield : BaseSkill, IEffect
 
     public void end(ObjectActor subject)
     {
+        clearIconInstances();
         obs1.complete();
         obs2.complete();
         obs3.complete();
         Destroy(this);
+    }
+
+    public void clearIconInstances()
+    {
+        foreach (GameObject obj in instanceList)
+        {
+            Destroy(obj);
+        }
     }
 
     public GameObject getIcon()

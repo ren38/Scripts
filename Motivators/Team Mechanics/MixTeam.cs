@@ -37,10 +37,13 @@ public class MixTeam : AITeam
 
     public override void addEnemyTeam(team newTeam)
     {
-        base.addEnemyTeam(newTeam);
-        foreach (BasicMotivator unit in motivatorUnits)
+        if (newTeam != this)
         {
-            unit.newTargetGroup(newTeam.getActorObjects());
+            base.addEnemyTeam(newTeam);
+            foreach (BasicMotivator unit in motivatorUnits)
+            {
+                unit.newTargetGroup(newTeam.getActorObjects());
+            }
         }
     }
 

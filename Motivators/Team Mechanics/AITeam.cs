@@ -36,7 +36,6 @@ public class AITeam : team
 
     protected virtual void trigger((ObjectInteractable, BaseSkill) data)
     {
-        Debug.Log("trigger called");
         if (determineIfHostile(data.Item2))
         {
             ObjectActor newHostile = data.Item1 as ObjectActor;

@@ -46,8 +46,17 @@ public class BurningEffect : MonoBehaviour, IEffect
 
     public void end(ObjectActor subject)
     {
+        clearIconInstances();
         multiple = 1;
         Destroy(this);
+    }
+
+    public void clearIconInstances()
+    {
+        foreach (GameObject obj in instanceList)
+        {
+            Destroy(obj);
+        }
     }
 
     public int getMult()

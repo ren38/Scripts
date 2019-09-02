@@ -47,8 +47,17 @@ public class ShatteredEffect : MonoBehaviour, IEffect
 
     public void end(ObjectActor subject)
     {
+        clearIconInstances();
         subject.physicalArmorValueChange(ARMORLOSS * multiple);
         Destroy(this);
+    }
+
+    public void clearIconInstances()
+    {
+        foreach (GameObject obj in instanceList)
+        {
+            Destroy(obj);
+        }
     }
 
     public int getMult()

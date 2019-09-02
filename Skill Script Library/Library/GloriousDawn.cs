@@ -41,6 +41,7 @@ public class GloriousDawn : BaseSkill, IEffect
                 GloriousDawn regeneration = target.gameObject.AddComponent<GloriousDawn>();
                 regeneration.setup(targetActor, source, skillName, briefSkillDescription, duration, stackHealing);
                 targetActor.applyNewEffect(regeneration);
+                targetActor.beginBurning(self);
             }
             else
             {
@@ -80,7 +81,16 @@ public class GloriousDawn : BaseSkill, IEffect
 
     public void end(ObjectActor subject)
     {
+        clearIconInstances();
         Destroy(this);
+    }
+
+    public void clearIconInstances()
+    {
+        foreach (GameObject obj in instanceList)
+        {
+            Destroy(obj);
+        }
     }
 
     public GameObject getIcon()

@@ -84,8 +84,17 @@ public class CyphersPoisonSkill : BaseSkill, IEffect
 
     public void end(ObjectActor subject)
     {
+        clearIconInstances();
         obs.complete();
         Destroy(this);
+    }
+
+    public void clearIconInstances()
+    {
+        foreach (GameObject obj in instanceList)
+        {
+            Destroy(obj);
+        }
     }
 
     public GameObject getIcon()

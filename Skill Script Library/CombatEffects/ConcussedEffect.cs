@@ -46,7 +46,15 @@ public class ConcussedEffect : MonoBehaviour, IEffect
 
     public void end(ObjectActor subject)
     {
+        clearIconInstances();
         Destroy(this);
+    }
+    public void clearIconInstances()
+    {
+        foreach (GameObject obj in instanceList)
+        {
+            Destroy(obj);
+        }
     }
 
     public GameObject getIcon()

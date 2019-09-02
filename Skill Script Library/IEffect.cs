@@ -11,4 +11,5 @@ public interface IEffect
     GameObject getIcon();
     void stack();
     float getDuration();
+    void clearIconInstances();
 }

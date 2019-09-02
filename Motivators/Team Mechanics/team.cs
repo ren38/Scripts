@@ -30,7 +30,7 @@ public abstract class team : MonoBehaviour
 
     public virtual void addEnemyTeam(team newTeam)
     {
-        if(!enemyTeams.Contains(newTeam))
+        if (!enemyTeams.Contains(newTeam))
         {
             enemyTeams.Add(newTeam);
         }
