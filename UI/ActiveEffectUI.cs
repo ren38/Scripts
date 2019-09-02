@@ -9,7 +9,6 @@ public class ActiveEffectUI : MonoBehaviour
     [SerializeField]
     private GameObject panel = null;
     private List<GameObject> effects;
-    private int displaying = 0;
     [SerializeField]
     private ObjectActor target = null;
     protected IntObserver removalSub;
@@ -32,7 +31,6 @@ public class ActiveEffectUI : MonoBehaviour
         if(target != null)
         {
             effects = target.getEffectListObjects();
-            displaying = effects.Count;
             displayList();
             setup();
         }
@@ -59,7 +57,6 @@ public class ActiveEffectUI : MonoBehaviour
         {
             setIconSize(o);
         }
-        displaying = effects.Count;
         displayList();
         setup();
     }
@@ -91,7 +88,6 @@ public class ActiveEffectUI : MonoBehaviour
         }
         setIconSize(newEffect);
         effects.Add(newEffect);
-        displaying++;
         displayList();
     }
 
@@ -113,14 +109,24 @@ public class ActiveEffectUI : MonoBehaviour
     public void shiftByIndex(int index)
     {
         GameObject temp = effects[index];
-        EffectMouseOver e = temp.GetComponent<EffectMouseOver>();
-        e.stop();
-        effects.RemoveAt(index);
-        Destroy(temp);
-        displaying--;
+        if(temp != null)
+        {
+            EffectMouseOver e = temp.GetComponent<EffectMouseOver>();
+            e.stop();
+            effects.RemoveAt(index);
+            Destroy(temp);
+        }
         displayList();
     }
     
+    public void removeFromList(GameObject effect)
+    {
+        if(effect != null)
+        {
+            effects.Remove(effect);
+        }
+    }
+
     public void displayList()
     {
         int count = 0;
@@ -155,7 +161,6 @@ public class ActiveEffectUI : MonoBehaviour
 
     public void clearList()
     {
-        displaying = 0;
         for (int i = effects.Count - 1; i >= 0; i--)
         {
             Destroy(effects[i].gameObject);

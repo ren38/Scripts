@@ -101,6 +101,7 @@ public class TargetPanel : Singleton<TargetPanel>
 
     public void newActorTarget(ObjectActor Target, string name)
     {
+        Debug.Log("New Actor found");
         effectsObject.SetActive(true);
         panel.SetActive(true);
         resetTargetPanel();

@@ -206,8 +206,15 @@ public class ObjectCombatable : ObjectInteractable
     public float trasnslateArmor(int armor)
     {
         float fArmor = (float)armor;
-        double suppression = 1.083775 * (Mathf.Atan(Mathf.Pow(fArmor, 1.8f) / 1800) * 2 / Mathf.PI) - .0838;
-        return (float)suppression;
+        if(armor > 0)
+        {
+            double suppression = 1.083775 * (Mathf.Atan(Mathf.Pow(fArmor, 1.8f) / 1800) * 2 / Mathf.PI) - .0838;
+            return (float)suppression;
+        }
+        else
+        {
+            return (float)(armor / 200);
+        }
     }
 
     public float applyArmor(int armor, float damage)

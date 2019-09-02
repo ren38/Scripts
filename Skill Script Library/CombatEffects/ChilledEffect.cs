@@ -53,21 +53,17 @@ public class ChilledEffect : MonoBehaviour, IEffect
 
     public void end(ObjectActor subject)
     {
-        clearIconInstances();
         Destroy(this);
+    }
+
+    public void abruptEnd()
+    {
+        endTime = Time.time;
     }
 
     public float getSpeedloss()
     {
         return SPEEDLOSS;
-    }
-
-    public void clearIconInstances()
-    {
-        foreach(GameObject obj in instanceList)
-        {
-            Destroy(obj);
-        }
     }
 
     public GameObject getIcon()

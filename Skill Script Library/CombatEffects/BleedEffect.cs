@@ -46,8 +46,12 @@ public class BleedEffect : MonoBehaviour, IEffect
 
     public void end(ObjectActor subject)
     {
-        multiple = 1;
         Destroy(this);
+    }
+
+    public void abruptEnd()
+    {
+        endTime = Time.time;
     }
 
     public int getMult()

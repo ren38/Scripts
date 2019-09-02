@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StaticMethods : Singleton<StaticMethods>
+public class EffectMethods : Singleton<EffectMethods>
 {
     public static void destroyGameObjectsInList(List<GameObject> instanceList)
     {

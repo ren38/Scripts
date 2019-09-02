@@ -267,6 +267,15 @@ public class ObjectActor : ObjectCombatable
             return;
         }
 
+        Stack<int> endEffectsList = createEndEffectsIndexList();
+        if(endEffectsList.Count > 0)
+        {
+            endEffectsByListOfIndices(endEffectsList);
+        }
+    }
+
+    private Stack<int> createEndEffectsIndexList()
+    {
         Stack<int> endEffectsIndex = new Stack<int>();
         int count = 0;
         foreach (IEffect effect in activeEffects)
@@ -281,10 +290,14 @@ public class ObjectActor : ObjectCombatable
             }
             count++;
         }
+        return endEffectsIndex;
+    }
 
-        for (int i = endEffectsIndex.Count - 1; i >= 0; i--)
+    private void endEffectsByListOfIndices(Stack<int> indices)
+    {
+        for (int i = indices.Count - 1; i >= 0; i--)
         {
-            int ind = endEffectsIndex.Pop();
+            int ind = indices.Pop();
             foreach (var observer in effectRemovalObservers)
             {
                 observer.trigger(ind);
@@ -388,7 +401,7 @@ public class ObjectActor : ObjectCombatable
         if (preexisting != null)
         {
             int mult = preexisting.getMult();
-            preexisting.end(this);
+            preexisting.abruptEnd();
             return mult;
         }
         return 0;
@@ -457,7 +470,7 @@ public class ObjectActor : ObjectCombatable
         if (preexisting != null)
         {
             int mult = preexisting.getMult();
-            preexisting.end(this);
+            preexisting.abruptEnd();
             return mult;
         }
         return 0;
@@ -528,7 +541,7 @@ public class ObjectActor : ObjectCombatable
         if (preexisting != null)
         {
             float mult = preexisting.getSpeedloss();
-            preexisting.end(this);
+            preexisting.abruptEnd();
             return mult;
         }
         return 0;
@@ -590,7 +603,7 @@ public class ObjectActor : ObjectCombatable
         if (preexisting != null)
         {
             int mult = preexisting.getMult();
-            preexisting.end(this);
+            preexisting.abruptEnd();
             return mult;
         }
         return 0;
@@ -648,7 +661,7 @@ public class ObjectActor : ObjectCombatable
         ConcussedEffect preexisting = getConcussedEffect();
         if (preexisting != null)
         {
-            preexisting.end(this);
+            preexisting.abruptEnd();
             return 1;
         }
         return 0;
