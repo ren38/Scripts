@@ -437,7 +437,6 @@ public class ObjectActor : ObjectCombatable
         ChilledEffect chilled = getChilledEffect();
         if (chilled != null)
         {
-            Debug.Log("Chilled found!");
             endChilled();
             return;
         }

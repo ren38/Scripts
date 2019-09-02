@@ -409,7 +409,6 @@ public class PlayerMotivator : Singleton<PlayerMotivator>
 
     public void setTeam(team team)
     {
-        Debug.Log("setTeam Called");
         playersTeam = team;
         actorSelf.setTeam(team);
     }

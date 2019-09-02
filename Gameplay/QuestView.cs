@@ -21,7 +21,6 @@ public class QuestView : Singleton<QuestView>
         log = QuestLog.Instance;
         // grabbing the initial list
         updateList(log.getActiveQuestNames());
-
         QuestPanel.SetActive(true);
         dropdown.onValueChanged.AddListener(delegate {
             grabQuest();
