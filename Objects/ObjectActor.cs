@@ -29,6 +29,8 @@ public class ObjectActor : ObjectCombatable
     private GameObject skillReference;
     private (int, ObjectCombatable) activation;
     private float[] cooldown;
+    [SerializeField]
+    private float attackMod = 1.0f;
 
     private bool autoMovingIntoRange = false;
     const int SKILLBARSIZE = 8;
@@ -103,7 +105,7 @@ public class ObjectActor : ObjectCombatable
         return currentEnergy / maxEnergy;
     }
 
-    void changeMaxEnergy(float delta)
+    public void changeMaxEnergy(float delta)
     {
         if (!dead)
         {
@@ -113,13 +115,16 @@ public class ObjectActor : ObjectCombatable
 
     public float getMaxEnergy(){return maxEnergy;}
 
-    void changeMaxEnergyPercent(float percentChange)
+    public void changeMaxEnergyPercent(float percentChange)
     {
         if (!dead)
         {
             this.maxEnergy += this.maxEnergy * percentChange;
         }
     }// percent change should be 0 < x >= 1
+
+    public void attackModChange(float delta){ attackMod += delta; }
+    public float getAttackMod() { return attackMod; }
     #endregion
 
     #region General Functions
@@ -133,6 +138,19 @@ public class ObjectActor : ObjectCombatable
             navAgent.SetDestination(position);
         }
     }
+
+    public float moveSpeedChangePercent(float percentChange)
+    {
+        float speedChange = navAgent.speed * percentChange;
+        navAgent.speed += speedChange;
+        return speedChange;
+    }
+
+    public void moveSpeedChangeValue(float valueChange)
+    {
+        navAgent.speed += valueChange;
+    }
+
     #endregion
 
     private void Update()

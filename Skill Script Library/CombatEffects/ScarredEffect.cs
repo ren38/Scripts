@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ShatteredEffect : MonoBehaviour, IEffect
+public class ScarredEffect : MonoBehaviour, IEffect
 {
-    private const float SHATTEREDDURATION = 3.0f;
-    private const int ARMORLOSS = 20;
+    private const float SCARREDDURATION = 3.0f;
+    private const int ARMORLOSS = 30;
     private int multiple = 1;
     private const int MAXMULTIPLIER = 3;
     protected ObjectActor subject;
@@ -23,13 +23,13 @@ public class ShatteredEffect : MonoBehaviour, IEffect
     {
         instanceList = new List<GameObject>();
         timed = true;
-        duration = SHATTEREDDURATION;
+        duration = SCARREDDURATION;
         endTime = duration + Time.time;
-        effectName = "Shattered";
-        description = string.Format("Physical armor value reduced by {0}.", ARMORLOSS);
+        effectName = "Arcane Scarred";
+        description = string.Format("Magic armor value decreased by {0}.", ARMORLOSS);
         this.subject = subject;
         this.source = source;
-        subject.physicalArmorValueChange(-ARMORLOSS);
+        subject.magicArmorValueChange(-ARMORLOSS);
     }
 
     public void apply(float deltaTime)
@@ -47,7 +47,7 @@ public class ShatteredEffect : MonoBehaviour, IEffect
 
     public void end(ObjectActor subject)
     {
-        subject.physicalArmorValueChange(ARMORLOSS * multiple);
+        subject.magicArmorValueChange(ARMORLOSS * multiple);
         Destroy(this);
     }
 
@@ -75,10 +75,10 @@ public class ShatteredEffect : MonoBehaviour, IEffect
         if (multiple < MAXMULTIPLIER)
         {
             multiple++;
-            subject.physicalArmorValueChange(-ARMORLOSS);
+            subject.magicArmorValueChange(-ARMORLOSS);
         }
-        string newName = ("Shattered x" + multiple);
-        string newDescription = string.Format("Physical armor value reduced by {0}.", ARMORLOSS * multiple);
+        string newName = ("Arcane Scarred x" + multiple);
+        string newDescription = string.Format("Magic armor value reduced by {0}.", ARMORLOSS * multiple);
         bool timed = true;
         effectFunctions.iconUpdate(instanceList, newName, newDescription, timed, endTime);
     }

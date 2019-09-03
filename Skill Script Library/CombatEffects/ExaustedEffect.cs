@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ShatteredEffect : MonoBehaviour, IEffect
+public class ExhaustedEffect : MonoBehaviour, IEffect
 {
-    private const float SHATTEREDDURATION = 3.0f;
-    private const int ARMORLOSS = 20;
-    private int multiple = 1;
-    private const int MAXMULTIPLIER = 3;
+    private const float EXHAUSTEDDURATION = 3.0f;
+    private const float ENERGYLOSS = 30.0f;
     protected ObjectActor subject;
     protected ObjectInteractable source;
 
@@ -23,13 +21,13 @@ public class ShatteredEffect : MonoBehaviour, IEffect
     {
         instanceList = new List<GameObject>();
         timed = true;
-        duration = SHATTEREDDURATION;
+        duration = EXHAUSTEDDURATION;
         endTime = duration + Time.time;
-        effectName = "Shattered";
-        description = string.Format("Physical armor value reduced by {0}.", ARMORLOSS);
+        effectName = "Exhausted";
+        description = string.Format("Maximum Energy reduced by {0}.", ENERGYLOSS);
         this.subject = subject;
         this.source = source;
-        subject.physicalArmorValueChange(-ARMORLOSS);
+        subject.changeMaxEnergy(-ENERGYLOSS);
     }
 
     public void apply(float deltaTime)
@@ -47,19 +45,13 @@ public class ShatteredEffect : MonoBehaviour, IEffect
 
     public void end(ObjectActor subject)
     {
-        subject.physicalArmorValueChange(ARMORLOSS * multiple);
+        subject.changeMaxEnergy(ENERGYLOSS);
         Destroy(this);
     }
 
     public void abruptEnd()
     {
         endTime = Time.time;
-    }
-
-
-    public int getMult()
-    {
-        return multiple;
     }
 
     public GameObject getIcon()
@@ -72,15 +64,7 @@ public class ShatteredEffect : MonoBehaviour, IEffect
 
     public void stack()
     {
-        if (multiple < MAXMULTIPLIER)
-        {
-            multiple++;
-            subject.physicalArmorValueChange(-ARMORLOSS);
-        }
-        string newName = ("Shattered x" + multiple);
-        string newDescription = string.Format("Physical armor value reduced by {0}.", ARMORLOSS * multiple);
-        bool timed = true;
-        effectFunctions.iconUpdate(instanceList, newName, newDescription, timed, endTime);
+        return;
     }
 
     public float getDuration()

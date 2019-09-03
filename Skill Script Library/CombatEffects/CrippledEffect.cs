@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ShatteredEffect : MonoBehaviour, IEffect
+public class CrippledEffect : MonoBehaviour, IEffect
 {
-    private const float SHATTEREDDURATION = 3.0f;
-    private const int ARMORLOSS = 20;
+    private const float CRIPPLEDDURATION = 20.0f;
+    private const float SPEEDLOSS = 0.25f;
     private int multiple = 1;
     private const int MAXMULTIPLIER = 3;
+    private float speedChanged;
     protected ObjectActor subject;
     protected ObjectInteractable source;
 
@@ -23,13 +24,13 @@ public class ShatteredEffect : MonoBehaviour, IEffect
     {
         instanceList = new List<GameObject>();
         timed = true;
-        duration = SHATTEREDDURATION;
+        duration = CRIPPLEDDURATION;
         endTime = duration + Time.time;
-        effectName = "Shattered";
-        description = string.Format("Physical armor value reduced by {0}.", ARMORLOSS);
+        effectName = "Crippled";
+        description = string.Format("Speed reduced by {0}%.", SPEEDLOSS * 100);
         this.subject = subject;
         this.source = source;
-        subject.physicalArmorValueChange(-ARMORLOSS);
+        speedChanged = subject.moveSpeedChangePercent(-SPEEDLOSS);
     }
 
     public void apply(float deltaTime)
@@ -47,7 +48,7 @@ public class ShatteredEffect : MonoBehaviour, IEffect
 
     public void end(ObjectActor subject)
     {
-        subject.physicalArmorValueChange(ARMORLOSS * multiple);
+        subject.moveSpeedChangeValue(speedChanged * multiple);
         Destroy(this);
     }
 
@@ -75,10 +76,10 @@ public class ShatteredEffect : MonoBehaviour, IEffect
         if (multiple < MAXMULTIPLIER)
         {
             multiple++;
-            subject.physicalArmorValueChange(-ARMORLOSS);
+            subject.moveSpeedChangeValue(-speedChanged);
         }
-        string newName = ("Shattered x" + multiple);
-        string newDescription = string.Format("Physical armor value reduced by {0}.", ARMORLOSS * multiple);
+        string newName = ("Crippled x" + multiple);
+        string newDescription = string.Format("Speed reduced by {0}%.", (int)SPEEDLOSS * 100);
         bool timed = true;
         effectFunctions.iconUpdate(instanceList, newName, newDescription, timed, endTime);
     }

@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ShatteredEffect : MonoBehaviour, IEffect
+public class PoisonedEffect : MonoBehaviour, IEffect
 {
-    private const float SHATTEREDDURATION = 3.0f;
-    private const int ARMORLOSS = 20;
-    private int multiple = 1;
-    private const int MAXMULTIPLIER = 3;
+    private const float POISONDURATION = 10.0f;
+    private const float DEGENSPEED = 4.0f;
     protected ObjectActor subject;
     protected ObjectInteractable source;
 
@@ -23,18 +21,17 @@ public class ShatteredEffect : MonoBehaviour, IEffect
     {
         instanceList = new List<GameObject>();
         timed = true;
-        duration = SHATTEREDDURATION;
+        duration = POISONDURATION;
         endTime = duration + Time.time;
-        effectName = "Shattered";
-        description = string.Format("Physical armor value reduced by {0}.", ARMORLOSS);
+        effectName = "Bleed";
+        description = string.Format("Lose {0} health per second.", DEGENSPEED);
         this.subject = subject;
         this.source = source;
-        subject.physicalArmorValueChange(-ARMORLOSS);
     }
 
     public void apply(float deltaTime)
     {
-        return;
+        subject.takeDamageNoObs(DEGENSPEED * deltaTime, source);
     }
 
     public float getEnd()
@@ -47,7 +44,6 @@ public class ShatteredEffect : MonoBehaviour, IEffect
 
     public void end(ObjectActor subject)
     {
-        subject.physicalArmorValueChange(ARMORLOSS * multiple);
         Destroy(this);
     }
 
@@ -56,15 +52,9 @@ public class ShatteredEffect : MonoBehaviour, IEffect
         endTime = Time.time;
     }
 
-
-    public int getMult()
-    {
-        return multiple;
-    }
-
     public GameObject getIcon()
     {
-        GameObject newInstance = Instantiate(ConditionLibrary.Instance.getInstanceByID(3));
+        GameObject newInstance = Instantiate(ConditionLibrary.Instance.getInstanceByID(0));
         instanceList.Add(newInstance);
         effectFunctions.setupIcon(newInstance, name, description, timed, endTime);
         return newInstance;
@@ -72,15 +62,8 @@ public class ShatteredEffect : MonoBehaviour, IEffect
 
     public void stack()
     {
-        if (multiple < MAXMULTIPLIER)
-        {
-            multiple++;
-            subject.physicalArmorValueChange(-ARMORLOSS);
-        }
-        string newName = ("Shattered x" + multiple);
-        string newDescription = string.Format("Physical armor value reduced by {0}.", ARMORLOSS * multiple);
-        bool timed = true;
-        effectFunctions.iconUpdate(instanceList, newName, newDescription, timed, endTime);
+        endTime += duration;// no max duration
+        effectFunctions.iconUpdate(instanceList, effectName, description, timed, endTime);
     }
 
     public float getDuration()
