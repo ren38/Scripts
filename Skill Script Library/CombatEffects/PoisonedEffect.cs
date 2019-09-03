@@ -54,7 +54,7 @@ public class PoisonedEffect : MonoBehaviour, IEffect
 
     public GameObject getIcon()
     {
-        GameObject newInstance = Instantiate(ConditionLibrary.Instance.getInstanceByID(0));
+        GameObject newInstance = Instantiate(ConditionLibrary.Instance.getInstanceByID(5));
         instanceList.Add(newInstance);
         effectFunctions.setupIcon(newInstance, name, description, timed, endTime);
         return newInstance;

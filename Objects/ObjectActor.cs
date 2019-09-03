@@ -705,6 +705,65 @@ public class ObjectActor : ObjectCombatable
 
     #endregion
 
+    #region poisoned
+    private List<effectObserver> poisonedBeginObservers;
+    private List<effectObserver> poisonedStackObservers;
+
+    public void beginPoisoned(ObjectInteractable source)
+    {
+        PoisonedEffect preexisting = getPoisonedEffect();
+        if (preexisting == null)
+        {
+            PoisonedEffect poisoned = gameObject.AddComponent<PoisonedEffect>();
+            poisoned.setup(this, source);
+            applyNewEffect(poisoned);
+            foreach (effectObserver obs in poisonedBeginObservers)
+            {
+                obs.trigger(poisoned);
+            }
+        }
+        else
+        {
+            preexisting.stack();
+            foreach (effectObserver obs in poisonedStackObservers)
+            {
+                obs.trigger(preexisting);
+            }
+        }
+    }
+
+    public int endPoisoned()
+    {
+        PoisonedEffect preexisting = getPoisonedEffect();
+        if (preexisting != null)
+        {
+            preexisting.abruptEnd();
+            return 1;
+        }
+        return 0;
+    }
+
+    public PoisonedEffect getPoisonedEffect()
+    {
+        return gameObject.GetComponent<PoisonedEffect>();
+    }
+
+    public void poisonedBeginSubscribe(effectObserver observer)
+    {
+        if (!poisonedBeginObservers.Contains(observer))
+            poisonedBeginObservers.Add(observer);
+        observer.connect(poisonedBeginObservers);
+    }
+
+    public void poisonedStackSubscribe(effectObserver observer)
+    {
+        if (!poisonedStackObservers.Contains(observer))
+            poisonedStackObservers.Add(observer);
+        observer.connect(poisonedStackObservers);
+    }
+
+    #endregion
+
     #endregion //ending conditions
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

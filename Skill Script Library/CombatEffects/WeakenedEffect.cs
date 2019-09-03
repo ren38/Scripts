@@ -64,7 +64,7 @@ public class WeakenedEffect : MonoBehaviour, IEffect
 
     public GameObject getIcon()
     {
-        GameObject newInstance = Instantiate(ConditionLibrary.Instance.getInstanceByID(3));
+        GameObject newInstance = Instantiate(ConditionLibrary.Instance.getInstanceByID(6));
         instanceList.Add(newInstance);
         effectFunctions.setupIcon(newInstance, name, description, timed, endTime);
         return newInstance;

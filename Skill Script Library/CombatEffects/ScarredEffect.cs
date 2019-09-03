@@ -64,7 +64,7 @@ public class ScarredEffect : MonoBehaviour, IEffect
 
     public GameObject getIcon()
     {
-        GameObject newInstance = Instantiate(ConditionLibrary.Instance.getInstanceByID(3));
+        GameObject newInstance = Instantiate(ConditionLibrary.Instance.getInstanceByID(7));
         instanceList.Add(newInstance);
         effectFunctions.setupIcon(newInstance, name, description, timed, endTime);
         return newInstance;
