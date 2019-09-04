@@ -12,7 +12,7 @@ public abstract class ConditionHandler : MonoBehaviour
         
         //Break this up into smaller functions.
 
-        BaseCondition preexisting = getCondition();
+        BaseCondition preexisting = getCondition<condition>();
         if (preexisting == null)
         {
             newInstance<condition>(subject, source);
@@ -43,19 +43,21 @@ public abstract class ConditionHandler : MonoBehaviour
         }
     }
 
-    public int endCondition()
+    public int endCondition<condition>() where condition : BaseCondition
     {
-        BaseCondition preexisting = getCondition();
+        condition preexisting = getCondition<condition>();
         if (preexisting != null)
         {
+            int mult = preexisting.getMult();
             preexisting.abruptEnd();
+            return mult;
         }
         return 0;
     }
 
-    public BaseCondition getCondition()
+    public condition getCondition<condition>() where condition : BaseCondition
     {
-        return gameObject.GetComponent<BaseCondition>();
+        return gameObject.GetComponent<condition>();
     }
 
     public void conditionBeginSubscribe(effectObserver observer)

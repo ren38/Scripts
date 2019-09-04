@@ -10,6 +10,8 @@ public abstract class BaseCondition : MonoBehaviour, IEffect
     protected float duration;
     protected float endTime;
     protected int conditionID;
+    protected int multiple;
+    protected int MAXMULTIPLIER;
     protected List<GameObject> instanceList;
     protected ObjectActor subject;
     protected ObjectInteractable source;
@@ -37,6 +39,11 @@ public abstract class BaseCondition : MonoBehaviour, IEffect
     public virtual float getDuration()
     {
         return duration;
+    }
+
+    public int getMult()
+    {
+        return multiple;
     }
 
     public virtual float getEnd(){ return endTime; }

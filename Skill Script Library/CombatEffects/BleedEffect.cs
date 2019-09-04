@@ -6,8 +6,6 @@ public class BleedEffect : BaseCondition
 {
     private const float BLEEDDURATION = 10.0f;
     private const float DEGENSPEED = 2.0f;
-    private int multiple = 1;
-    private const int MAXMULTIPLIER = 10;
 
     public override void setup(ObjectActor subject, ObjectInteractable source)
     {
@@ -15,6 +13,8 @@ public class BleedEffect : BaseCondition
         description = string.Format("Lose {0} health per second.", DEGENSPEED * multiple);
         conditionID = 0;
         duration = BLEEDDURATION;
+        multiple = 1;
+        MAXMULTIPLIER = 10;
         base.setup(subject, source);
     }
 
