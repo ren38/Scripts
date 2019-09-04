@@ -14,6 +14,7 @@ public class WeakenedEffect : BaseCondition
         effectName = "Weakened";
         description = string.Format("Basic attack power reduced by {0}%.", ATTACKLOSS * 100);
         subject.attackModChange(-ATTACKLOSS);
+        conditionID = 6;
         base.setup(subject, source);
     }
 

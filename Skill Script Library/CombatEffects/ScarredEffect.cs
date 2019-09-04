@@ -14,6 +14,7 @@ public class ScarredEffect : BaseCondition
         description = string.Format("Magic armor value decreased by {0}.", ARMORLOSS);
         MAXMULTIPLIER = 3;
         subject.magicArmorValueChange(-ARMORLOSS);
+        conditionID = 7;
         base.setup(subject, source);
     }
 

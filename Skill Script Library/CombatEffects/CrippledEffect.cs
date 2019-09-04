@@ -15,6 +15,7 @@ public class CrippledEffect : BaseCondition
         description = string.Format("Speed reduced by {0}%.", SPEEDLOSS * 100);
         MAXMULTIPLIER = 3;
         speedChanged = subject.moveSpeedChangePercent(-SPEEDLOSS);
+        conditionID = 8;
         base.setup(subject, source);
     }
     public override void end(ObjectActor subject)

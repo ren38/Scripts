@@ -14,6 +14,7 @@ public class WoundedEffect : BaseCondition
         effectName = "Wounded";
         description = string.Format("Maximum health reduced by {0}.", HEALTHLOSS);
         subject.changeMaxHealth(-HEALTHLOSS);
+        conditionID = 9;
         base.setup(subject, source);
     }
 

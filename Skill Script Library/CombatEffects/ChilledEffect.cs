@@ -10,17 +10,14 @@ public class ChilledEffect : BaseCondition
 
     public override void setup(ObjectActor subject, ObjectInteractable source)
     {
-        instanceList = new List<GameObject>();
-        timed = true;
         duration = CHILLEDDURATION;
-        endTime = duration + Time.time;
         effectName = "Burning";
         description = string.Format("Skill activation takes {0}x longer.", 1.0f + SPEEDLOSS);
-        this.subject = subject;
-        this.source = source;
         obs = subject.gameObject.AddComponent<FloatAdjuster>();
         obs.setupObserver(change);
         subject.skillStartSubscribe(obs);
+        conditionID = 2;
+        base.setup(subject, source);
     }
 
     public float change(float num)

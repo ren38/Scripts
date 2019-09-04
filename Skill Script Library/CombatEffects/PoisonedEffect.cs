@@ -12,6 +12,7 @@ public class PoisonedEffect : BaseCondition
         duration = POISONDURATION;
         effectName = "Poisoned";
         description = string.Format("Lose {0} health per second.", DEGENSPEED);
+        conditionID = 5;
         base.setup(subject, source);
     }
 

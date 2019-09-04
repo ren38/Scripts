@@ -13,6 +13,7 @@ public class ExhaustedEffect : BaseCondition
         effectName = "Exhausted";
         description = string.Format("Maximum Energy reduced by {0}.", ENERGYLOSS);
         subject.changeMaxEnergy(-ENERGYLOSS);
+        conditionID = 10;
         base.setup(subject, source);
     }
 

@@ -14,6 +14,7 @@ public class ConcussedEffect : BaseCondition
         GameObjectObserver obs = subject.gameObject.AddComponent<GameObjectObserver>();
         obs.setupObserver(trigger);
         subject.rawHitSubscribe(obs);
+        conditionID = 4;
         base.setup(subject, source);
     }
 
