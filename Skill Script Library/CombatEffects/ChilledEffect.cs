@@ -2,23 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ChilledEffect : MonoBehaviour, IEffect
+public class ChilledEffect : BaseCondition
 {
     private const float CHILLEDDURATION = 20.0f;
     private float SPEEDLOSS = 0.1f;
-    protected ObjectActor subject;
-    protected ObjectInteractable source;
     protected FloatAdjuster obs;
 
-    protected int conditionID;
-    protected List<GameObject> instanceList;
-    protected string effectName;
-    protected string description;
-    protected bool timed;
-    protected float duration;
-    protected float endTime;
-
-    public void setup(ObjectActor subject, ObjectInteractable source)
+    public override void setup(ObjectActor subject, ObjectInteractable source)
     {
         instanceList = new List<GameObject>();
         timed = true;
@@ -33,32 +23,9 @@ public class ChilledEffect : MonoBehaviour, IEffect
         subject.skillStartSubscribe(obs);
     }
 
-    public void apply(float deltaTime)
-    {
-        return;
-    }
-
-    public float getEnd()
-    { return endTime; }
-
-    public void setEnd(float num)
-    {
-        endTime = num + Time.time;
-    }
-
     public float change(float num)
     {
         return num + SPEEDLOSS;
-    }
-
-    public void end(ObjectActor subject)
-    {
-        Destroy(this);
-    }
-
-    public void abruptEnd()
-    {
-        endTime = Time.time;
     }
 
     public float getSpeedloss()
@@ -66,32 +33,18 @@ public class ChilledEffect : MonoBehaviour, IEffect
         return SPEEDLOSS;
     }
 
-    public GameObject getIcon()
-    {
-        GameObject newInstance = Instantiate(ConditionLibrary.Instance.getInstanceByID(2));
-        instanceList.Add(newInstance);
-        effectFunctions.setupIcon(newInstance, name, description, timed, endTime);
-        return newInstance;
-    }
-
-    public void stack()
+    public override void stack()
     {
         addDuration(8.0f);
         addLoss(0.1f);
-        string newName = ("Chilled x" + (1.0f + SPEEDLOSS));
-        string newDescription = string.Format("Skill activation takes {0}x longer.", 1.0f + SPEEDLOSS);
-        bool timed = true;
-        effectFunctions.iconUpdate(instanceList, newName, newDescription, timed, endTime);
+        effectName = ("Chilled x" + (1.0f + SPEEDLOSS));
+        description = string.Format("Skill activation takes {0}x longer.", 1.0f + SPEEDLOSS);
+        base.stack();
     }
 
-    public float getDuration()
+    public void addLoss(float delta)
     {
-        return duration;
-    }
-
-    public void addLoss(float addition)
-    {
-        SPEEDLOSS += addition;
+        SPEEDLOSS += delta;
         if (SPEEDLOSS >= 2.0f)
         {
             SPEEDLOSS = 2.0f;

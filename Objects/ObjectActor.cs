@@ -41,6 +41,15 @@ public class ObjectActor : ObjectCombatable
 
     private BleedHandler bleedHandler;
     private BurningHandler burnHandler;
+    private ChilledHandler chillHandler;
+    private ShatteredHandler shatterHandler;
+    private ConcussedHandler concussedHandler;
+    private PoisonedHandler poisonHandler;
+    private WeakenedHandler weakenedHandler;
+    private ScarredHandler scarredHandler;
+    private CrippledHandler crippleHandler;
+    private WoundedHandler woundedHandler;
+    private ExhaustedHandler exhaustedHandler;
 
     // Start is called before the first frame update
     void Awake()
@@ -60,12 +69,24 @@ public class ObjectActor : ObjectCombatable
         bleedHandler.setupHandler();
         burnHandler = gameObject.AddComponent<BurningHandler>();
         burnHandler.setupHandler();
-        chilledBeginObservers = new List<effectObserver>();
-        chilledStackObservers = new List<effectObserver>();
-        shatteredBeginObservers = new List<effectObserver>();
-        shatteredStackObservers = new List<effectObserver>();
-        concussedBeginObservers = new List<effectObserver>();
-        concussedStackObservers = new List<effectObserver>();
+        chillHandler = gameObject.AddComponent<ChilledHandler>();
+        chillHandler.setupHandler();
+        shatterHandler = gameObject.AddComponent<ShatteredHandler>();
+        shatterHandler.setupHandler();
+        concussedHandler = gameObject.AddComponent<ConcussedHandler>();
+        concussedHandler.setupHandler();
+        poisonHandler = gameObject.AddComponent<PoisonedHandler>();
+        poisonHandler.setupHandler();
+        weakenedHandler = gameObject.AddComponent<WeakenedHandler>();
+        weakenedHandler.setupHandler();
+        scarredHandler = gameObject.AddComponent<ScarredHandler>();
+        scarredHandler.setupHandler();
+        crippleHandler = gameObject.AddComponent<CrippledHandler>();
+        crippleHandler.setupHandler();
+        woundedHandler = gameObject.AddComponent<WoundedHandler>();
+        woundedHandler.setupHandler();
+        exhaustedHandler = gameObject.AddComponent<ExhaustedHandler>();
+        exhaustedHandler.setupHandler();
         cooldown = new float[8];
         base.setupCombatable();
         initializeOrders();
@@ -448,115 +469,42 @@ public class ObjectActor : ObjectCombatable
     #endregion //burning
 
     #region chilled
-    private List<effectObserver> chilledBeginObservers;
-    private List<effectObserver> chilledStackObservers;
-
     public void beginChilled(ObjectInteractable source)
     {
-        //chilled negates burning condition
-        BurningEffect burning = getBurningEffect();
-        if (burning == null)
-        {
-            //check if there is already a bleed effect active.
-            //if not, start one. else stack one
-            ChilledEffect preexisting = getChilledEffect();
-            if (preexisting == null)
-            {
-                ChilledEffect chilled = gameObject.AddComponent<ChilledEffect>();
-                chilled.setup(this, source);
-                applyNewEffect(chilled);
-                foreach (effectObserver obs in chilledBeginObservers)
-                {
-                    obs.trigger(chilled);
-                }
-            }
-            else
-            {
-                preexisting.stack();
-                foreach (effectObserver obs in chilledStackObservers)
-                {
-                    obs.trigger(preexisting);
-                }
-            }
-        }
-        else
-        {
-            endBurning();
-        }
-    }
-
-    public float endChilled()
-    {
-        ChilledEffect preexisting = getChilledEffect();
-        if (preexisting != null)
-        {
-            float mult = preexisting.getSpeedloss();
-            preexisting.abruptEnd();
-            return mult;
-        }
-        return 0;
+        chillHandler.beginChilled(this, source);
     }
 
     public ChilledEffect getChilledEffect()
     {
-        return gameObject.GetComponent<ChilledEffect>();
+        return chillHandler.GetChilled();
+    }
+
+    public float endChilled()
+    {
+        return chillHandler.EndChilled();
     }
 
     public void chilledBeginSubscribe(effectObserver observer)
     {
-        if (!chilledBeginObservers.Contains(observer))
-            chilledBeginObservers.Add(observer);
-        observer.connect(chilledBeginObservers);
+        chillHandler.conditionBeginSubscribe(observer);
     }
 
     public void chilledStackSubscribe(effectObserver observer)
     {
-        if (!chilledStackObservers.Contains(observer))
-            chilledStackObservers.Add(observer);
-        observer.connect(chilledStackObservers);
+        chillHandler.conditionStackSubscribe(observer);
     }
 
     #endregion //chilled
 
     #region shattered
-    private List<effectObserver> shatteredBeginObservers;
-    private List<effectObserver> shatteredStackObservers;
-
     public void beginShattered(ObjectInteractable source)
     {
-        //check if there is already a bleed effect active.
-        //if not, start one. else stack one
-        ShatteredEffect preexisting = getShatteredEffect();
-        if (preexisting == null)
-        {
-            ShatteredEffect shattered = gameObject.AddComponent<ShatteredEffect>();
-            shattered.setup(this, source);
-            applyNewEffect(shattered);
-            foreach (effectObserver obs in shatteredBeginObservers)
-            {
-                obs.trigger(shattered);
-            }
-        }
-        else
-        {
-            preexisting.stack();
-            foreach (effectObserver obs in shatteredStackObservers)
-            {
-                obs.trigger(preexisting);
-            }
-        }
+        shatterHandler.beginShattered(this, source);
     }
 
     public int endShattered()
     {
-        ShatteredEffect preexisting = getShatteredEffect();
-        if (preexisting != null)
-        {
-            int mult = preexisting.getMult();
-            preexisting.abruptEnd();
-            return mult;
-        }
-        return 0;
+        return shatterHandler.EndShattered();
     }
 
     public ShatteredEffect getShatteredEffect()
@@ -566,55 +514,19 @@ public class ObjectActor : ObjectCombatable
 
     public void shatteredBeginSubscribe(effectObserver observer)
     {
-        if (!shatteredBeginObservers.Contains(observer))
-            shatteredBeginObservers.Add(observer);
-        observer.connect(shatteredBeginObservers);
+        shatterHandler.conditionBeginSubscribe(observer);
     }
 
     public void shatteredStackSubscribe(effectObserver observer)
     {
-        if (!shatteredStackObservers.Contains(observer))
-            shatteredStackObservers.Add(observer);
-        observer.connect(shatteredStackObservers);
+        shatterHandler.conditionStackSubscribe(observer);
     }
     #endregion //shattered
 
     #region concussed
-    private List<effectObserver> concussedBeginObservers;
-    private List<effectObserver> concussedStackObservers;
-
     public void beginConcussed(ObjectInteractable source)
     {
-        ConcussedEffect preexisting = getConcussedEffect();
-        if (preexisting == null)
-        {
-            ConcussedEffect concussed = gameObject.AddComponent<ConcussedEffect>();
-            concussed.setup(this, source);
-            applyNewEffect(concussed);
-            foreach (effectObserver obs in concussedBeginObservers)
-            {
-                obs.trigger(concussed);
-            }
-        }
-        else
-        {
-            preexisting.stack();
-            foreach (effectObserver obs in concussedStackObservers)
-            {
-                obs.trigger(preexisting);
-            }
-        }
-    }
-
-    public int endConcussed()
-    {
-        ConcussedEffect preexisting = getConcussedEffect();
-        if (preexisting != null)
-        {
-            preexisting.abruptEnd();
-            return 1;
-        }
-        return 0;
+        concussedHandler.beginConcussed(this, source);
     }
 
     public ConcussedEffect getConcussedEffect()
@@ -622,77 +534,193 @@ public class ObjectActor : ObjectCombatable
         return gameObject.GetComponent<ConcussedEffect>();
     }
 
+    public int endConcussed()
+    {
+        return concussedHandler.EndConcussed();
+    }
+
     public void concussedBeginSubscribe(effectObserver observer)
     {
-        if (!concussedBeginObservers.Contains(observer))
-            concussedBeginObservers.Add(observer);
-        observer.connect(concussedBeginObservers);
+        concussedHandler.conditionBeginSubscribe(observer);
     }
 
     public void concussedStackSubscribe(effectObserver observer)
     {
-        if (!concussedStackObservers.Contains(observer))
-            concussedStackObservers.Add(observer);
-        observer.connect(concussedStackObservers);
+        concussedHandler.conditionStackSubscribe(observer);
     }
 
     #endregion
 
     #region poisoned
-    private List<effectObserver> poisonedBeginObservers;
-    private List<effectObserver> poisonedStackObservers;
 
     public void beginPoisoned(ObjectInteractable source)
     {
-        PoisonedEffect preexisting = getPoisonedEffect();
-        if (preexisting == null)
-        {
-            PoisonedEffect poisoned = gameObject.AddComponent<PoisonedEffect>();
-            poisoned.setup(this, source);
-            applyNewEffect(poisoned);
-            foreach (effectObserver obs in poisonedBeginObservers)
-            {
-                obs.trigger(poisoned);
-            }
-        }
-        else
-        {
-            preexisting.stack();
-            foreach (effectObserver obs in poisonedStackObservers)
-            {
-                obs.trigger(preexisting);
-            }
-        }
-    }
-
-    public int endPoisoned()
-    {
-        PoisonedEffect preexisting = getPoisonedEffect();
-        if (preexisting != null)
-        {
-            preexisting.abruptEnd();
-            return 1;
-        }
-        return 0;
+        poisonHandler.beginPoisoned(this, source);
     }
 
     public PoisonedEffect getPoisonedEffect()
     {
-        return gameObject.GetComponent<PoisonedEffect>();
+        return poisonHandler.GetPoisoned();
+    }
+
+    public int endPoisoned()
+    {
+        return poisonHandler.EndPoisoned();
     }
 
     public void poisonedBeginSubscribe(effectObserver observer)
     {
-        if (!poisonedBeginObservers.Contains(observer))
-            poisonedBeginObservers.Add(observer);
-        observer.connect(poisonedBeginObservers);
+        poisonHandler.conditionStackSubscribe(observer);
     }
 
     public void poisonedStackSubscribe(effectObserver observer)
     {
-        if (!poisonedStackObservers.Contains(observer))
-            poisonedStackObservers.Add(observer);
-        observer.connect(poisonedStackObservers);
+        poisonHandler.conditionStackSubscribe(observer);
+    }
+
+    #endregion
+
+    #region weakened
+
+    public void beginWeakened(ObjectInteractable source)
+    {
+        weakenedHandler.beginWeakened(this, source);
+    }
+
+    public WeakenedEffect getWeakenedEffect()
+    {
+        return weakenedHandler.GetWeakened();
+    }
+
+    public int endWeakened()
+    {
+        return weakenedHandler.EndWeakened();
+    }
+
+    public void weakenedBeginSubscribe(effectObserver observer)
+    {
+        weakenedHandler.conditionStackSubscribe(observer);
+    }
+
+    public void weakenedStackSubscribe(effectObserver observer)
+    {
+        weakenedHandler.conditionStackSubscribe(observer);
+    }
+
+    #endregion
+
+    #region scarred
+
+    public void beginScarred(ObjectInteractable source)
+    {
+        scarredHandler.beginScarred(this, source);
+    }
+
+    public ScarredEffect getScarredEffect()
+    {
+        return scarredHandler.GetScarred();
+    }
+
+    public int endScarred()
+    {
+        return scarredHandler.EndScarred();
+    }
+
+    public void scarredBeginSubscribe(effectObserver observer)
+    {
+        scarredHandler.conditionStackSubscribe(observer);
+    }
+
+    public void scarredStackSubscribe(effectObserver observer)
+    {
+        scarredHandler.conditionStackSubscribe(observer);
+    }
+
+    #endregion
+
+    #region crippled
+
+    public void beginCrippled(ObjectInteractable source)
+    {
+        crippleHandler.beginCrippled(this, source);
+    }
+
+    public CrippledEffect getCrippledEffect()
+    {
+        return crippleHandler.GetCrippled();
+    }
+
+    public int endCrippled()
+    {
+        return crippleHandler.EndCrippled();
+    }
+
+    public void crippleBeginSubscribe(effectObserver observer)
+    {
+        crippleHandler.conditionStackSubscribe(observer);
+    }
+
+    public void StackSubscribe(effectObserver observer)
+    {
+        crippleHandler.conditionStackSubscribe(observer);
+    }
+
+    #endregion
+
+    #region wounded
+
+    public void beginWounded(ObjectInteractable source)
+    {
+        woundedHandler.beginWounded(this, source);
+    }
+
+    public WoundedEffect getWoundedEffect()
+    {
+        return woundedHandler.GetWounded();
+    }
+
+    public int endWounded()
+    {
+        return woundedHandler.EndWounded();
+    }
+
+    public void woundedBeginSubscribe(effectObserver observer)
+    {
+        woundedHandler.conditionStackSubscribe(observer);
+    }
+
+    public void woundedStackSubscribe(effectObserver observer)
+    {
+        woundedHandler.conditionStackSubscribe(observer);
+    }
+
+    #endregion
+
+    #region Exhausted
+
+    public void beginExhausted(ObjectInteractable source)
+    {
+        exhaustedHandler.beginExhausted(this, source);
+    }
+
+    public ExhaustedEffect getExhaustedEffect()
+    {
+        return exhaustedHandler.GetExhausted();
+    }
+
+    public int endExhausted()
+    {
+        return exhaustedHandler.EndExhausted();
+    }
+
+    public void exhaustedBeginSubscribe(effectObserver observer)
+    {
+        exhaustedHandler.conditionStackSubscribe(observer);
+    }
+
+    public void exhaustedStackSubscribe(effectObserver observer)
+    {
+        exhaustedHandler.conditionStackSubscribe(observer);
     }
 
     #endregion
