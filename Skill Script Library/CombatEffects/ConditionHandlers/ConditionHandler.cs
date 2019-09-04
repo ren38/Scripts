@@ -7,6 +7,12 @@ public abstract class ConditionHandler : MonoBehaviour
     private List<effectObserver> conditionBeginObservers;
     private List<effectObserver> conditionStackObservers;
 
+    public void setupHandler()
+    {
+        conditionBeginObservers = new List<effectObserver>();
+        conditionStackObservers = new List<effectObserver>();
+    }
+
     public void beginCondition<condition>(ObjectActor subject, ObjectInteractable source) where condition : BaseCondition
     {
         

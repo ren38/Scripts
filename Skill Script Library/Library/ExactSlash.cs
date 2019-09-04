@@ -22,7 +22,7 @@ public class ExactSlash : BaseSkill
 
         if (targetActor != null)
         {
-            targetActor.beginBleed(self);
+            targetActor.beginBleeding(self);
         }
     }
 }

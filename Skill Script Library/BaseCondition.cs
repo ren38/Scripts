@@ -50,14 +50,15 @@ public abstract class BaseCondition : MonoBehaviour, IEffect
 
     public virtual GameObject getIcon()
     {
-        if(instanceList != null)
+        if(instanceList == null)
         {
-            GameObject newInstance = Instantiate(ConditionLibrary.Instance.getInstanceByID(conditionID));
-            instanceList.Add(newInstance);
-            effectFunctions.setupIcon(newInstance, effectName, description, timed, endTime);
-            return newInstance;
+            Debug.Log("Warning! instance list has not been initialized.");
+            return null;
         }
-        return null;
+        GameObject newInstance = Instantiate(ConditionLibrary.Instance.getInstanceByID(conditionID));
+        instanceList.Add(newInstance);
+        effectFunctions.setupIcon(newInstance, effectName, description, timed, endTime);
+        return newInstance;
     }
 
     public virtual void setEnd(float num)

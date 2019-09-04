@@ -23,11 +23,6 @@ public class BleedEffect : BaseCondition
         subject.takeDamageNoObs(DEGENSPEED * deltaTime * multiple, source);
     }
 
-    public int getMult()
-    {
-        return multiple;
-    }
-
     public override void stack()
     {
         if (multiple < MAXMULTIPLIER)

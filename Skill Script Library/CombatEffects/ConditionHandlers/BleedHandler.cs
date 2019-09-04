@@ -14,7 +14,7 @@ public class BleedHandler : ConditionHandler
         return getCondition<BleedEffect>();
     }
 
-    public int endCondition()
+    public int EndBleed()
     {
         return endCondition<BleedEffect>();
     }
