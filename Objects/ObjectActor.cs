@@ -776,42 +776,72 @@ public class ObjectActor : ObjectCombatable
     {
         if (skillQueue.Count != 0 && Time.time >= nextActionTime && nextActionBool)
         {
-            activation = skillQueue[0];
-            skillActivatingIndex = activation.Item1;
-            if (skillBar[skillActivatingIndex] != null && !activation.Item2.getDeathState())
-            {
-                skillReference = skillBar[skillActivatingIndex];
-                skillBeingActivated = skillReference.GetComponent<BaseSkill>();
-                float distance = Vector3.Distance(this.gameObject.transform.position, activation.Item2.transform.position);
-                if (skillBeingActivated != null)
-                {
-                    if (skillBeingActivated.getEnergyCost() <= getCurrentEnergy() && distance <= skillBeingActivated.getRange())
-                    {
-                        skillQueue.RemoveAt(0);
-                        nextActionBool = false;
-                        startSkill(activation.Item2);
-                    }
-                    else if (distance > skillBeingActivated.getRange())
-                    {
-                        float dist = skillBeingActivated.getRange();
-                        navAgent.stoppingDistance = dist;
-                        navAgent.SetDestination(activation.Item2.transform.position);
-                    }
-                }
-                else
-                {
-                    Debug.Log("Skill got nulled.");
-                }
-            }
-            else if (activation.Item2.getDeathState())
-            {
-                skillQueue.RemoveAt(0);
-                foreach (var observer in dequeueObservers)
-                {
-                    observer.trigger(0);
-                }
-            }
+            timeForASkill();
         }
+    }
+
+    private void timeForASkill()
+    {
+        activation = skillQueue[0];
+        skillActivatingIndex = activation.Item1;
+        if (skillBar[skillActivatingIndex] != null && !activation.Item2.getDeathState())
+        {
+            checkValidity();
+        }
+        else if (activation.Item2.getDeathState())
+        {
+            targetDiedAlready();
+        }
+    }
+
+    private void checkValidity()
+    {
+        skillReference = skillBar[skillActivatingIndex];
+        skillBeingActivated = skillReference.GetComponent<BaseSkill>();
+        if (skillBeingActivated != null)
+        {
+            checkRange();
+}
+        else
+        {
+            Debug.Log("Skill got nulled.");
+        }
+    }
+
+    private void checkRange()
+    {
+        float distance = Vector3.Distance(this.gameObject.transform.position, activation.Item2.transform.position);
+        if (skillBeingActivated.getEnergyCost() <= getCurrentEnergy() && distance <= skillBeingActivated.getRange())
+        {
+            readyForSkill();
+        }
+        else if (distance > skillBeingActivated.getRange())
+        {
+            outOfRange();
+        }
+    }
+
+    private void targetDiedAlready()
+    {
+        skillQueue.RemoveAt(0);
+        foreach (var observer in dequeueObservers)
+        {
+            observer.trigger(0);
+        }
+    }
+
+    private void readyForSkill()
+    {
+        skillQueue.RemoveAt(0);
+        nextActionBool = false;
+        startSkill(activation.Item2);
+    }
+
+    private void outOfRange()
+    {
+        float dist = skillBeingActivated.getRange();
+        navAgent.stoppingDistance = dist;
+        navAgent.SetDestination(activation.Item2.transform.position);
     }
 
     private void checkIfInRange()

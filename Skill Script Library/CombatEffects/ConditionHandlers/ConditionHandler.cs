@@ -13,15 +13,15 @@ public abstract class ConditionHandler : MonoBehaviour
         conditionStackObservers = new List<effectObserver>();
     }
 
-    public void beginCondition<condition>(ObjectActor subject, ObjectInteractable source) where condition : BaseCondition
+    public void beginCondition<Condition>(ObjectActor subject, ObjectInteractable source) where Condition : BaseCondition
     {
         
         //Break this up into smaller functions.
 
-        BaseCondition preexisting = getCondition<condition>();
+        BaseCondition preexisting = getCondition<Condition>();
         if (preexisting == null)
         {
-            newInstance<condition>(subject, source);
+            newInstance<Condition>(subject, source);
         }
         else
         {
@@ -29,9 +29,9 @@ public abstract class ConditionHandler : MonoBehaviour
         }
     }
 
-    protected void newInstance<condition>(ObjectActor subject, ObjectInteractable source) where condition : BaseCondition
+    protected void newInstance<Condition>(ObjectActor subject, ObjectInteractable source) where Condition : BaseCondition
     {
-        condition newCondition = gameObject.AddComponent<condition>();
+        Condition newCondition = gameObject.AddComponent<Condition>();
         newCondition.setup(subject, source);
         subject.applyNewEffect(newCondition);
         foreach (effectObserver obs in conditionBeginObservers)
