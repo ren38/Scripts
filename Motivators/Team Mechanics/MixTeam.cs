@@ -39,18 +39,25 @@ public class MixTeam : AITeam
     {
         if (newTeam != this)
         {
-            base.addEnemyTeam(newTeam);
-            foreach (BasicMotivator unit in motivatorUnits)
-            {
-                unit.newTargetGroup(newTeam.getActorObjects());
-            }
+        }
+        base.addEnemyTeam(newTeam);
+        foreach (BasicMotivator unit in motivatorUnits)
+        {
+            unit.newTargetGroup(newTeam.getActorObjects());
         }
     }
 
     public override void addEnemyIndividual(ObjectCombatable newIndividual)
     {
-        base.addEnemyIndividual(newIndividual);
         ObjectActor actor = (ObjectActor) newIndividual;
+        if(actor != null)
+        {
+            if (actorObjects.Contains(actor))
+            {
+                return;
+            }
+        }
+        base.addEnemyIndividual(newIndividual);
         if (actor != null)
         {
             foreach (BasicMotivator unit in motivatorUnits)

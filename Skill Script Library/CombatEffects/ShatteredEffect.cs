@@ -13,7 +13,7 @@ public class ShatteredEffect : BaseCondition
         effectName = "Shattered";
         description = string.Format("Physical armor value reduced by {0}.", ARMORLOSS);
         MAXMULTIPLIER = 3;
-        conditionID = 1;
+        conditionID = 3;
         base.setup(subject, source);
         subject.physicalArmorValueChange(-ARMORLOSS);
     }

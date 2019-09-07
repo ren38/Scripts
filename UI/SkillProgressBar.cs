@@ -36,6 +36,10 @@ public class SkillProgressBar : MonoBehaviour
 
     public void removeIcon()
     {
+        if(skill == null)
+        {
+            return;
+        }
         Destroy(skill);
     }
 

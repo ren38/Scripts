@@ -44,6 +44,10 @@ public class AITeam : team
                 team targetTeam = newHostile.getTeam();
                 if(targetTeam != null)
                 {
+                    if(targetTeam == this)
+                    {
+                        return;
+                    }
                     notifyAllTeam(targetTeam);
                 }
                 else

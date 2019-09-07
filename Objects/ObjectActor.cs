@@ -696,7 +696,7 @@ public class ObjectActor : ObjectCombatable
 
     #endregion
 
-    #region Exhausted
+    #region exhausted
 
     public void beginExhausted(ObjectInteractable source)
     {
@@ -954,6 +954,8 @@ public class ObjectActor : ObjectCombatable
     {
         return skillActivating;
     }
+
+    public GameObject getSkillActivatingObject(){ return skillBar[skillActivatingIndex]; }
 
     public float getSkillFinishTime()
     {

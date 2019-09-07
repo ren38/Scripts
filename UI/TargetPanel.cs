@@ -40,10 +40,16 @@ public class TargetPanel : Singleton<TargetPanel>
     [SerializeField]
     private GameObject queueObject = null;
 
+    [SerializeField]
+    private SkillProgressBar progressBar;
+    private IntObserver skillActivationObs;
+    private IntObserver skillCompletionObs;
+    private bool progressBarActive = false;
+
     // Start is called before the first frame update
     void Start()
     {
-
+        deactivateProgressBar(0);
     }
 
     void Update()
@@ -58,6 +64,7 @@ public class TargetPanel : Singleton<TargetPanel>
                 TargetEnergyNum.text = Mathf.Round(TargetActor.getCurrentEnergy()).ToString();
             }
         }
+        updateProgressBar();
     }
 
     public void Deactivate()
@@ -72,6 +79,14 @@ public class TargetPanel : Singleton<TargetPanel>
         if(queueObject != null)
         {
             queueObject.SetActive(false);
+        }
+        if(skillActivationObs != null)
+        {
+            skillActivationObs.complete();
+        }
+        if (skillCompletionObs != null)
+        {
+            skillCompletionObs.complete();
         }
     }
 
@@ -97,16 +112,24 @@ public class TargetPanel : Singleton<TargetPanel>
         {
             targetQueue.unsetQueue();
         }
+        if (skillActivationObs != null)
+        {
+            skillActivationObs.complete();
+        }
+        if (skillCompletionObs != null)
+        {
+            skillCompletionObs.complete();
+        }
+        deactivateProgressBar(0);
     }
 
     public void newActorTarget(ObjectActor Target, string name)
     {
-
         effectsObject.SetActive(true);
         panel.SetActive(true);
         resetTargetPanel();
-        this.TargetActor = Target;
-        this.TargetCombatable = Target as ObjectCombatable;
+        TargetActor = Target;
+        TargetCombatable = Target as ObjectCombatable;
         targetType = 3;
         TargetName.text = name;
         queueObject.SetActive(true);
@@ -122,7 +145,12 @@ public class TargetPanel : Singleton<TargetPanel>
         energyBarSet(true);
         //}
         //}
-        
+        skillActivationObs = gameObject.AddComponent<IntObserver>();
+        skillActivationObs.setupObserver(setProgressBar);
+        Target.skillDequeueSubscribe(skillActivationObs);
+        skillCompletionObs = gameObject.AddComponent<IntObserver>();
+        skillCompletionObs.setupObserver(deactivateProgressBar);
+        Target.skillFinishSubscribe(skillCompletionObs);
     }
     public void newCombatableTarget(ObjectCombatable Target, string name)
     {
@@ -154,4 +182,27 @@ public class TargetPanel : Singleton<TargetPanel>
 
     public void healthBarSet(bool setting) { HealthBarActive = setting; }
     public void energyBarSet(bool setting) { EnergyBarActive = setting; }
+
+    public void setProgressBar(int i)
+    {
+        progressBar.setActive(true);
+        progressBar.setName(TargetActor.getNameOfSkillInProgress());
+        progressBar.placeIcon(TargetActor.getSkillActivatingObject());
+        progressBarActive = true;
+    }
+
+    private void updateProgressBar()
+    {
+        if(progressBarActive)
+        {
+            progressBar.setPercent(TargetActor.getSkillProgress());
+        }
+    }
+
+    public void deactivateProgressBar(int i)
+    {
+        progressBar.removeIcon();
+        progressBar.setActive(false);
+        progressBarActive = false;
+    }
 }
