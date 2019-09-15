@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SepticStrike: BaseSkill
 {
-    public override void activate(ObjectActor self, ObjectCombatable target)
+    public override bool activate(ObjectActor self, ObjectCombatable target, out string message)
     {
         target.takePiercingDamage(10.0f, (ObjectInteractable)self);
         float damage;
@@ -18,5 +18,7 @@ public class SepticStrike: BaseSkill
 
         }
         target.takePoisonDamage(damage, (ObjectInteractable)self);
+        message = "";
+        return false;
     }
 }

@@ -16,9 +16,11 @@ public class StabSkill : BaseSkill
         range = 3.5f;
     */
 
-    public override void activate(ObjectActor self, ObjectCombatable target)
+    public override bool activate(ObjectActor self, ObjectCombatable target, out string message)
     {
         float damage = self.getStr() * 0.5f + 10.0f;
         target.takePiercingDamage(damage, (ObjectInteractable)self);
+        message = "";
+        return false;
     }
 }

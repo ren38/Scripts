@@ -31,7 +31,11 @@ public abstract class BaseSkill : MonoBehaviour
 
     public void setID(int newID){ID = newID;}
     public int getID() { return ID; }
-    public abstract void activate(ObjectActor self, ObjectCombatable target);
+
+    // activate returns true if a message is needed due to something happening.
+    // An example is a condition for a skill being activated is not met. The message string is filled
+    // with the text to be shown to the player.
+    public abstract bool activate(ObjectActor self, ObjectCombatable target, out string message);
     //public abstract bool validateTargetting(ObjectCombatable target);
     public virtual OrderEnum getOrder() { return order; }
     public virtual float getCooldown() { return cooldown; }

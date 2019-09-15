@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Execute : BaseSkill
 {
-    public override void activate(ObjectActor self, ObjectCombatable target)
+    public override bool activate(ObjectActor self, ObjectCombatable target, out string message)
     {
         float num = target.getPercentHealth();
         if (num < 0.25f)
@@ -17,6 +17,13 @@ public class Execute : BaseSkill
             float damage = self.getStr() * 0.5f + 30.0f;
             target.takeSlashingDamage(damage, (ObjectInteractable)self);
         }
+        else
+        {
+            message = "Target's health was not low enough.";
+            return true;
+        }
+        message = "";
+        return false;
     }
 }
 

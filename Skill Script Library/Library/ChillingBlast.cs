@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ChillingBlast : BaseSkill
 {
-    public override void activate(ObjectActor self, ObjectCombatable target)
+    public override bool activate(ObjectActor self, ObjectCombatable target, out string message)
     {
         ObjectActor targetActor = target as ObjectActor;
         target.takeColdDamage(10.0f, self);
@@ -12,5 +12,7 @@ public class ChillingBlast : BaseSkill
         {
             targetActor.beginChilled(self);
         }
+        message = "";
+        return false;
     }
 }

@@ -16,7 +16,7 @@ public class ExactSlash : BaseSkill
         range = 3.0f;
     */
 
-    public override void activate(ObjectActor self, ObjectCombatable target)
+    public override bool activate(ObjectActor self, ObjectCombatable target, out string message)
     {
         ObjectActor targetActor = target as ObjectActor;
 
@@ -24,5 +24,7 @@ public class ExactSlash : BaseSkill
         {
             targetActor.beginBleeding(self);
         }
+        message = "";
+        return false;
     }
 }

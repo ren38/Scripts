@@ -19,7 +19,7 @@ public class Shield : BaseSkill, IEffect
     [SerializeField]
     private float value = 15.0f;
 
-    public override void activate(ObjectActor self, ObjectCombatable target)
+    public override bool activate(ObjectActor self, ObjectCombatable target, out string message)
     {
         //Debug.Log(energyCost);
         ObjectActor targetActor = target as ObjectActor;
@@ -38,6 +38,8 @@ public class Shield : BaseSkill, IEffect
                 preexisting.stack();
             }
         }
+        message = "";
+        return false;
     }
 
 

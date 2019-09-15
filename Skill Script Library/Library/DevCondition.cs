@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DevCondition : BaseSkill
 {
-    public override void activate(ObjectActor self, ObjectCombatable target)
+    public override bool activate(ObjectActor self, ObjectCombatable target, out string message)
     {
         ObjectActor actor = (ObjectActor)target;
         if(actor != null)
@@ -21,5 +21,7 @@ public class DevCondition : BaseSkill
             actor.beginWeakened(self);
             actor.beginWounded(self);
         }
+        message = "";
+        return false;
     }
 }

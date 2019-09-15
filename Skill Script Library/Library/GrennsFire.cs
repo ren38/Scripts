@@ -16,7 +16,7 @@ public class GrennsFire : BaseSkill, IEffect
     protected float endTime;
 
 
-    public override void activate(ObjectActor self, ObjectCombatable target)
+    public override bool activate(ObjectActor self, ObjectCombatable target, out string message)
     {
         ObjectActor targetActor = target as ObjectActor;
         ObjectInteractable source = self as ObjectInteractable;
@@ -35,6 +35,8 @@ public class GrennsFire : BaseSkill, IEffect
                 preexisting.stack();
             }
         }
+        message = "";
+        return false;
     }
 
     public void setup(

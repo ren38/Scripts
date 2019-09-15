@@ -81,6 +81,7 @@ public class PlayerMotivator : Singleton<PlayerMotivator>
         cameraX = angles.y;
         cameraY = angles.x;
         QueueUI.setup();
+        actorSelf.isPlayer = true;
     }
 
     void Awake()

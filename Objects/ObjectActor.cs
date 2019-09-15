@@ -97,6 +97,8 @@ public class ObjectActor : ObjectCombatable
     [SerializeField]
     protected float currentEnergy = 10;
 
+    public bool isPlayer = false;
+
     #region stats
     void changeCurrentEnergy(float delta)
     {
@@ -969,7 +971,15 @@ public class ObjectActor : ObjectCombatable
 
     private void finishSkill()
     {
-        skillBeingActivated.activate(this, nextTarget);
+
+        // activate should return bool true if a message is needed
+        // messages do not necessarily mean that the skill failed, but that condition was or was not met.
+        string message;
+        bool messageNeeded = skillBeingActivated.activate(this, nextTarget, out message);
+        if (isPlayer && messageNeeded)
+        {
+            ErrorMessage.Instance.setActive(true, message);
+        }
         nextActionTime = Time.time + ACTIONDELAY;
         nextActionBool = true;
         skillActivating = false;

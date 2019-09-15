@@ -30,7 +30,7 @@ public class CyphersPoisonSkill : BaseSkill, IEffect
     private float damage = 15.0f;
 
 
-    public override void activate(ObjectActor self, ObjectCombatable target)
+    public override bool activate(ObjectActor self, ObjectCombatable target, out string message)
     {
         //Debug.Log(energyCost);
         ObjectActor targetActor = target as ObjectActor;
@@ -49,6 +49,8 @@ public class CyphersPoisonSkill : BaseSkill, IEffect
                 preexisting.stack();
             }
         }
+        message = "";
+        return false;
     }
 
     public void setup(
